@@ -26,7 +26,8 @@ searchInput.addEventListener('keydown', ev => {
 });
 
 document.addEventListener('DOMContentLoaded', ev => {
-    DLInterface = loadItens();
-
-    
+    loadItens()
+    .then(DLI => {
+        DLInterface = DLI;
+    });
 });

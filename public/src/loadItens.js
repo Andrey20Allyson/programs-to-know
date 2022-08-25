@@ -1,9 +1,21 @@
 import createDownloadListInterface from './DLLoader.js';
 
-function load() {
+/**
+ * 
+ * @typedef {import('ptk_types').DownloadListInterface} DownloadListInterface
+ * @typedef {import('ptk_types').DLIFactoryOptions} DLIFactoryOptions
+ */
+
+async function load() {
     const DLInterface = createDownloadListInterface('downloadlist');
 
-    fetch('./?data=data')
+    const resp = await fetch('./data?type=json');
+    /**@type {DLIFactoryOptions[]} */
+    const data = await resp.json();
+
+    data.forEach(value => {
+        DLInterface.addDownloadItem(value);
+    });
 
     return DLInterface;
 }

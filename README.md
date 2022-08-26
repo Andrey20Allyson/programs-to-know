@@ -4,6 +4,10 @@
     <p>Um jeito diferente de conhecer tecnologias!</p>
 </div>
 
+## Licença
+
+- [![license][https://img.shields.io/badge/license/]]()
+
 ## Sobre o Projeto
 
 Prograns To Know é um web-serviço que apresenta uma gama de tecnologias para se conhecer quando está se iniciando.
@@ -32,15 +36,14 @@ Aqui está os Frameworks, Linguagens e APIs utilizadas para execução desse pro
 
 ### Front-End
 
-- [![JavaScript]][]
-- [![HTML]][]
-- [![CSS]][]
+- JavaScript
+- HTML
+- CSS
 
 ### Back-End
 
-- [![NodeJS]][]
-    - [![JavaScript]][]
-    - [![Express]][]
+- NodeJS
+- Express
 
 ## Criando um servidor local
 
@@ -54,7 +57,7 @@ Esse é um passo a passo para rodar um servidor local para a realização de tes
 
 ### Inicialização
 
-#### com `cmd`
+#### Com `cmd`
 
 Crie um clone do repositório na sua maquina
 

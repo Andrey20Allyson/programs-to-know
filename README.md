@@ -1,12 +1,10 @@
 <!-- Project Logo -->
-<div style='background-color: #0000003f; padding: 2px; border-radius: 10px' align='center'>
-    <h1 id='text' style='color: #a2f2f2; text-shadow: 0px 0px 4px #a2f0f0cf;'>Programs To Know</h1>
+<div align='center'>
+    <h1>Programs To Know</h1>
     <p>Um jeito diferente de conhecer tecnologias!</p>
 </div>
 
-## Licença
-
-[![license][https://img.shields.io/badge/license-MIT-green]](https://)
+[![NPM](https://img.shields.io/badge/license-MIT-green)](https://github.com/Andrey20Allyson/programs-to-know/blob/master/LICENSE)
 
 ## Sobre o Projeto
 

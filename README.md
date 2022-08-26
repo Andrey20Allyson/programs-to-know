@@ -1,4 +1,3 @@
-<!-- Project Logo -->
 <div align='center'>
     <h1>Programs To Know</h1>
     <p>Um jeito diferente de conhecer tecnologias!</p>

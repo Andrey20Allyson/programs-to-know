@@ -19,6 +19,6 @@ app.get('/data', (req, res, next) => {
         });
 });
 
-server.listen(80, '192.168.0.140', () => {
-    console.log('> server is listening on port 80');
+server.listen(80, 'localhost', () => {
+    console.log('> Now server is listening http://localhost/');
 });

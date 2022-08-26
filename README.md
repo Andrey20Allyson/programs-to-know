@@ -8,7 +8,7 @@
 
 ## Sobre o Projeto
 
-Prograns To Know é um web-serviço que apresenta uma gama de tecnologias para se conhecer quando está se iniciando.
+Prograns To Know é um web-serviço que apresenta uma gama de tecnologias para se conhecer quando está se iniciando na programação.
 
 ### A exemplo de
 

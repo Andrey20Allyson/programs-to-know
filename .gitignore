@@ -4,4 +4,4 @@ node_modules/*
 !node_modules/@types
 
 node_modules/@types/*
-!node_modules/@types/pacotedoidao
+!node_modules/@types/ptk_types

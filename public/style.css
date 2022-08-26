@@ -33,6 +33,10 @@ header, div{
     box-shadow: 2px 2px 3px #ffffff27;
 }
 
+li{
+    font-size: calc( .9vh * .4vw );
+}
+
 #searchDiv{
     display: flex;
     align-items: center;
@@ -61,7 +65,7 @@ header, div{
 
     caret-color: #9d47ff;
 
-    min-width: 200px;
+    min-width: 400px;
     width: 40vw;
 }
 

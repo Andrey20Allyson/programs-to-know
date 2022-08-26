@@ -1,43 +1,11 @@
 /**
- * ----------->> enums <<-----------
- * 
- * @typedef {'86' | '64'} ArchitectureEnum
- * 
- * ----------->> types <<-----------
- * 
- * @typedef {{
- *   downloadLink: string;
- *   imgSrc?: string;
- *   title?: string;
- *   dependences?: string[];
- *   architecture: ArchitectureEnum;
- * }} DLIFactoryOptions
- * 
- * @typedef {{
- *   element: HTMLDivElement;
- *   title?: string;
- *   desc: string;
- *   dependences: string[];
- *   architecture: ArchitectureEnum;
- * }} DownloadItem
- * 
- * @typedef {{
- *   showAll() => void;
- *   hideAll() => void;
- *   hideFilter(callback: HideFilterCallback) => void;
- *   getItem(key: string) => HTMLDivElement;
- *   insertItem(key: string, value: HTMLDivElement) => string?;
- *   removeItem(key: string) => HTMLModElement;
- *   addDownloadItem(opts: DLIFactoryOptions) => void;
- * }} DownloadListInterface
- * 
- * ----------->> functions <<-----------
- * 
- * @typedef {(containerId: string) => DownloadListInterface} DownloadListInterfaceFactory
+ * @
+ * @typedef {import('ptk_types').DownloadItem} DownloadItem
+ * @typedef {import('ptk_types').Storage<DownloadItem>} DownloadItemStorage
+ * @typedef {import('ptk_types').DownloadListInterface} DownloadListInterface
+ * @typedef {import('ptk_types').DLIFactoryOptions} DLIFactoryOptions
  * @typedef {(key: string, value: number) => string} ParseSuffixFunction
- * @typedef {(value: DownloadItem, key: string) => boolean} HideFilterCallback
  */;
-
 
 /**
  * `@example`
@@ -46,12 +14,15 @@
  * 
  * DLInterface.addDownloadItem({title: 'Visual Studio Code', downloadLink: 'https://www.example.com'});
  * ```
- * @type {DownloadListInterfaceFactory}
+ * @param {string} containerId
+ * @param {any} settings
+ * @returns {DownloadListInterface}
  */
 function createDownloadListInterface(containerId, settings) {
     if (containerId === undefined)
         throw new Error('param "contanerId" can\'t be undefined!');
 
+    /**@type {DownloadItemStorage} */
     const downloadItens = {};
     const HTMLcontainer = document.getElementById(containerId);
     const rules = {
@@ -61,12 +32,20 @@ function createDownloadListInterface(containerId, settings) {
     if (HTMLcontainer === null)
         throw new Error(`container with id="${containerId}" not found!`);
 
-    /**@type {ParseSuffixFunction} */
+    /**
+     * 
+     * @param {string} key
+     * @param {number} value
+     * @returns {string}
+     */
     function parseSuffix(key, value) {
         return key + (value > 0 ? ` [${value}]`: '');
     }
 
-    /**@type {() => [string, DownloadItem][]} */
+    /**
+     * 
+     * @returns {[string, DownloadItem][]}
+     */
     function downloadItensEntries() {
         return Object.entries(downloadItens);
     }
@@ -74,19 +53,19 @@ function createDownloadListInterface(containerId, settings) {
     return {
         showAll() {
             downloadItensEntries().map(([key, value]) => {
-                value.element.hidden = true;
+                value.container.hidden = true;
             })
         },
 
         hideAll() {
             for (let [key, value] of downloadItensEntries()) {
-                value.element.hidden = true;
+                value.container.hidden = true;
             }
         },
 
         hideFilter(callback) {
             for (let [key, value] of downloadItensEntries()) {
-                value.element.hidden = callback(value, key)
+                value.container.hidden = callback(value, key)
             }
         },
 
@@ -107,13 +86,14 @@ function createDownloadListInterface(containerId, settings) {
         },
 
         addDownloadItem(opts) {
-            let {downloadLink, imgSrc, title='N/A', architecture='64', dependences=[]} = opts;
+            const { downloadLink, imgSrc, title='N/A', architecture='64', dependences=[] } = opts;
         
             if (!downloadLink)
                 throw new Error('required param is not defined!');
 
-            let depsList = '';
-            let itemImg = '';
+            let depsList = '',
+                itemImg = '',
+                container = document.createElement('div');
 
             if (dependences.length > 0) {
                 depsList = '<p>dependências:</p><ul>';
@@ -124,37 +104,52 @@ function createDownloadListInterface(containerId, settings) {
 
                 depsList += '</ul>\n';
             }
-        
-            let div = document.createElement('div');
 
             if (imgSrc !== undefined) {
                 itemImg = `<img src="imgs/${imgSrc}.jpeg" alt="not found">`;
             }
 
-            div.innerHTML = `
+            container.innerHTML = `
                 <div class="title">
-                    ${itemImg}
-                    <h2>${title}</h2> 
+                    ${ itemImg }
+                    <h2>${ title }</h2> 
                 </div>
-                <p>x${architecture} ->
-                    <a href="${downloadLink}">download</a>
+                <p>x${ architecture } ->
+                    <a href="${ downloadLink }">download</a>
                 </p>
-                ${depsList}
+                ${ depsList }
             `;
         
             this.insertItem(title, {
-                element: div,
+                container,
                 title,
                 architecture,
                 dependences
             });
 
-            HTMLcontainer.appendChild(div);
+            HTMLcontainer.appendChild(container);
+        },
+
+        async loadFrom(url) {
+            const resp = await fetch(url);
+            /**@type {DLIFactoryOptions[]} */
+            const data = await resp.json();
+
+            data.forEach(value => {
+                this.addDownloadItem(value);
+            });
         },
 
         removeItem(key) {
-            document.removeChild(downloadItens[key].element);
+            const item = downloadItens[key] ?? null;
+
+            if (item === null)
+                return item;
+
+            document.removeChild(item.container);
             delete downloadItens[key];
+
+            return item;
         }
     };
 }

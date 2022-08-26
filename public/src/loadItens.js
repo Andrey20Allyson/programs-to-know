@@ -9,16 +9,7 @@ import createDownloadListInterface from './DLLoader.js';
 function load() {
     const DLInterface = createDownloadListInterface('downloadlist');
 
-    fetch('./data?type=json')
-    .then(resp => resp.json())
-    .then(/**@type {(data: DLIFactoryOptions[]) => Promise<void>} */ data => {
-        data.forEach(value => {
-            DLInterface.addDownloadItem(value);
-        });
-    })
-    .catch(reason => {
-        console.log(reason);
-    });
+    DLInterface.loadFrom('./data?type=json');
 
     return DLInterface;
 }

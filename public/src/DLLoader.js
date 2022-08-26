@@ -8,8 +8,9 @@
  */;
 
 /**
- * `@example`
- * ```
+ * ## `Example` 
+ * 
+ * ```js
  * const DLInterface = createDownloadListInterface('downloadList');
  * 
  * DLInterface.addDownloadItem({title: 'Visual Studio Code', downloadLink: 'https://www.example.com'});

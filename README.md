@@ -4,7 +4,6 @@
     <p>Um jeito diferente de conhecer tecnologias!</p>
 </div>
 
-#
 ## Sobre o Projeto
 
 Prograns To Know é um web-serviço que apresenta uma gama de tecnologias para se conhecer quando está se iniciando.
@@ -26,23 +25,23 @@ Prograns To Know é um web-serviço que apresenta uma gama de tecnologias para s
 - Ler **descrições detalhadas**
 - Observar **dependencias**
 - Realizar **buscas**
-#
+
 ## Construido com
 
 Aqui está os Frameworks, Linguagens e APIs utilizadas para execução desse projeto.
 
 ### Front-End
 
-- ![JavaScript][]
-- ![HTML][]
-- ![CSS][]
+- [![JavaScript]][]
+- [![HTML]][]
+- [![CSS]][]
 
 ### Back-End
 
-- ![NodeJS][]
-    - ![JavaScript][]
-    - ![Express][]
-#
+- [![NodeJS]][]
+    - [![JavaScript]][]
+    - [![Express]][]
+
 ## Criando um servidor local
 
 Esse é um passo a passo para rodar um servidor local para a realização de testes do website.
@@ -80,7 +79,7 @@ Por fim, execute o arquivo `index.js` com o NodeJS
 ```sh
 node index.js
 ```
-#
+
 ## Progresso
 
 ### Front-End

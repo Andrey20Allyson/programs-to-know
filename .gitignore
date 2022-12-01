@@ -1,7 +1,2 @@
-package-lock.json
-
-node_modules/*
-!node_modules/@types
-
-node_modules/@types/*
-!node_modules/@types/ptk_types
+node_modules
+dist

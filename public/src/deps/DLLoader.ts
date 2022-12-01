@@ -1,30 +1,47 @@
-/**
- * @
- * @typedef {import('ptk_types').DownloadItem} DownloadItem
- * @typedef {import('ptk_types').Storage<DownloadItem>} DownloadItemStorage
- * @typedef {import('ptk_types').DownloadListInterface} DownloadListInterface
- * @typedef {import('ptk_types').DLIFactoryOptions} DLIFactoryOptions
- * @typedef {(key: string, value: number) => string} ParseSuffixFunction
- */;
+export type ArchitectureEnum = '86' | '64';
 
-/**
- * ## `Example` 
- * 
- * ```js
- * const DLInterface = createDownloadListInterface('downloadList');
- * 
- * DLInterface.addDownloadItem({title: 'Visual Studio Code', downloadLink: 'https://www.example.com'});
- * ```
- * @param {string} containerId
- * @param {any} settings
- * @returns {DownloadListInterface}
- */
-function createDownloadListInterface(containerId, settings) {
+export interface Storage<T> {
+    [K: string]: T;
+}
+
+export type HideFilterCallback = (d: DownloadItem, s: string) => boolean;
+
+export interface DLIFactoryOptions {
+    downloadLink: string;
+    imgSrc?: string;
+    title?: string;
+    dependences?: string[];
+    architecture: ArchitectureEnum;
+}
+
+export interface DownloadItem {
+    container: HTMLDivElement;
+    title: string;
+    desc: string;
+    dependences: string[];
+    architecture: ArchitectureEnum;
+}
+
+export interface DownloadListInterface {
+    showAll(): void;
+    hideAll(): void;
+    hideFilter(callback: (value: DownloadItem, key: string) => boolean): void;
+    getItem(key: string): DownloadItem | undefined;
+    insertItem(key: string, value: DownloadItem): string | undefined;
+    removeItem(key: string): DownloadItem | undefined;
+    addDownloadItem(opts: DLIFactoryOptions): void;
+    loadFrom(url: string): Promise<number>;
+}
+
+export interface DownloadItemStorage {
+    [k: string]: DownloadItem;
+}
+
+export default function createDownloadListInterface(containerId: string, settings: any): DownloadListInterface {
     if (containerId === undefined)
         throw new Error('param "contanerId" can\'t be undefined!');
 
-    /**@type {DownloadItemStorage} */
-    const downloadItens = {};
+    const downloadItens: DownloadItemStorage = {};
     const HTMLcontainer = document.getElementById(containerId);
     const rules = {
         canDuplicate: false
@@ -33,29 +50,20 @@ function createDownloadListInterface(containerId, settings) {
     if (HTMLcontainer === null)
         throw new Error(`container with id="${containerId}" not found!`);
 
-    /**
-     * 
-     * @param {string} key
-     * @param {number} value
-     * @returns {string}
-     */
-    function parseSuffix(key, value) {
+    function parseSuffix(key: string, value: number) {
         return key + (value > 0 ? ` [${value}]`: '');
     }
 
-    /**
-     * 
-     * @returns {[string, DownloadItem][]}
-     */
-    function downloadItensEntries() {
-        return Object.entries(downloadItens);
+    function * downloadItensEntries(): Generator<[string, DownloadItem]> {
+        for (let key in downloadItens)
+            yield [key, downloadItens[key]];
     }
 
     return {
         showAll() {
-            downloadItensEntries().map(([key, value]) => {
+            for (let [key, value] of downloadItensEntries()) {
                 value.container.hidden = true;
-            })
+            }
         },
 
         hideAll() {
@@ -84,6 +92,8 @@ function createDownloadListInterface(containerId, settings) {
             }
 
             downloadItens[suffixedKey] = value;
+
+            return suffixedKey;
         },
 
         addDownloadItem(opts) {
@@ -125,7 +135,8 @@ function createDownloadListInterface(containerId, settings) {
                 container,
                 title,
                 architecture,
-                dependences
+                dependences,
+                desc: ''
             });
 
             HTMLcontainer.appendChild(container);
@@ -133,12 +144,18 @@ function createDownloadListInterface(containerId, settings) {
 
         async loadFrom(url) {
             const resp = await fetch(url);
-            /**@type {DLIFactoryOptions[]} */
-            const data = await resp.json();
+            
+            const data: DLIFactoryOptions[] = await resp.json();
 
             data.forEach(value => {
                 this.addDownloadItem(value);
             });
+
+            if (resp.status < 400) {
+                return 0;
+            } else {
+                return 1;
+            }
         },
 
         removeItem(key) {
@@ -154,5 +171,3 @@ function createDownloadListInterface(containerId, settings) {
         }
     };
 }
-
-export {createDownloadListInterface as default};

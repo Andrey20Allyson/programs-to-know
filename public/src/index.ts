@@ -2,7 +2,7 @@ import { DownloadListInterface } from "./deps/DLLoader.js";
 import loadItens from "./deps/LoadItens.js";
 
 function getSearch() {
-    const searchInput = document.getElementById('search0In');
+    const searchInput = document.getElementById('searchIn');
 
     if (!(searchInput instanceof HTMLInputElement))
         throw new Error('searchInput dont is a HTMLInputElement');

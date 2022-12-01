@@ -16,10 +16,6 @@ function onGet(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-for (let i of [1, 2].keys()) {
-    
-}
-
 function onServerListen() {
     console.log('> Now server is listening https://localhost/');
 }

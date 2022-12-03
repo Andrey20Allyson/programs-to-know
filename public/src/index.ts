@@ -1,5 +1,5 @@
-import { DownloadListInterface } from "./deps/DLLoader.js";
-import loadItens from "./deps/LoadItens.js";
+import { DownloadItem, IDownloadList } from "./loader/DLLoader.js";
+import loadItens from "./loader/LoadItens.js";
 
 function getSearch() {
     const searchInput = document.getElementById('searchIn');
@@ -12,21 +12,21 @@ function getSearch() {
 
 const searchInput = getSearch();
 
-let DLInterface: DownloadListInterface | undefined;
-
 function onContentLoaded(ev: Event) {
-    DLInterface = loadItens();
+    const DLInterface = loadItens();
+
+    searchInput.addEventListener('keydown', () => setInterval(changeDisplay.bind(undefined, DLInterface), 50));
 }
 
-function changeDisplay() {
-    if (!DLInterface)
-            return;
- 
+function changeDisplay(DLInterface: IDownloadList) {
     const keyWords = new Set(searchInput.value.toLowerCase().split(' '));
 
-    DLInterface.hideFilter(value => {
+    DLInterface.hideFilter(createHideFilterHandle(keyWords));
+}
 
-        let searchTitle = value.title.toLowerCase() ?? '';
+function createHideFilterHandle(keyWords: Set<string>) {
+    return (item: DownloadItem) => {
+        let searchTitle = item.title.toLowerCase() ?? '';
 
         for (let keyWord of keyWords) {
             if (!searchTitle.includes(keyWord)) 
@@ -34,15 +34,7 @@ function changeDisplay() {
         }
 
         return false;
-    });
+    } 
 }
 
-function onSearchKeyDown(ev: KeyboardEvent) {
-    if (!DLInterface)
-        return;
-    
-    setInterval(changeDisplay, 50);
-}
-
-searchInput.addEventListener('keydown', onSearchKeyDown);
 document.addEventListener('DOMContentLoaded', onContentLoaded);

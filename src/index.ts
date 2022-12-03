@@ -5,7 +5,7 @@ import { readFile } from 'fs/promises';
 const app = express();
 const server = createServer(app);
 
-function onGet(req: Request, res: Response, next: NextFunction) {
+function onGetData(req: Request, res: Response, next: NextFunction) {
     const { type } = req.query;
 
     if (type === 'json') {
@@ -21,6 +21,6 @@ function onServerListen() {
 }
 
 app.use(express.static('public'));
-app.get('/data', onGet);
+app.get('/data', onGetData);
 
 server.listen(3000, 'localhost', onServerListen);

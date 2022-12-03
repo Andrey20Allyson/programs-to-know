@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { createServer } from 'https';
+import { createServer } from 'http';
 import { readFile } from 'fs/promises';
 
 const app = express();
@@ -22,4 +22,5 @@ function onServerListen() {
 
 app.use(express.static('public'));
 app.get('/data', onGet);
-server.listen(80, 'localhost', onServerListen);
+
+server.listen(3000, 'localhost', onServerListen);

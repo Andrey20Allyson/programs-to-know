@@ -1,9 +1,5 @@
 export type ArchitectureEnum = '86' | '64';
 
-export interface Storage<T> {
-    [K: string]: T;
-}
-
 export type HideFilterCallback = (d: DownloadItem, s: string) => boolean;
 
 export interface DLIFactoryOptions {
@@ -22,15 +18,25 @@ export interface DownloadItem {
     architecture: ArchitectureEnum;
 }
 
+export interface SelectionOptions {
+    title?: string;
+}
+
+export interface IIterableStorage<T> {
+    iterEntries(): Generator<[string, T]>;
+    iterValues(): Generator<T>;
+    iterKeys(): Generator<string>
+}
+
 export interface IDownloadList {
     showAll(): void;
     hideAll(): void;
     hideFilter(callback: (value: DownloadItem, key: string) => boolean): void;
+    hideBySelection(keyWords: string): void;
     getItem(key: string): DownloadItem | undefined;
     deleteItem(key: string): DownloadItem | undefined;
     createItem(opts: DLIFactoryOptions): void;
     load(): Promise<number>;
-    downloadItensEntries(): Generator<[string, DownloadItem]>;
 }
 
 export interface ListSettings {
@@ -42,7 +48,7 @@ export interface DownloadItemStorage {
     [k: string]: DownloadItem;
 }
 
-export class DownloadList implements IDownloadList {
+export class DownloadList implements IDownloadList, IIterableStorage<DownloadItem> {
     static defaultSettings: ListSettings = {
         loadUrl: undefined,
         loadOnInit: true,
@@ -59,27 +65,48 @@ export class DownloadList implements IDownloadList {
         this.loadSettings();
     }
 
-    * downloadItensEntries(): Generator<[string, DownloadItem], any, unknown> {
+    hideBySelection(text: string): void {
+        const keyWords = new Set(text.toLowerCase().split(' '));
+
+        this.hideFilter(item => {
+            let searchTitle = item.title.toLowerCase();
+
+            for (let keyWord of keyWords)
+                if (!searchTitle.includes(keyWord))
+                    return true;
+
+            return false;
+        });
+    }
+
+    * iterEntries(): Generator<[string, DownloadItem]> {
         for (let key in this.itens)
             yield [key, this.itens[key]];
     }
 
+    * iterValues(): Generator<DownloadItem> {
+        for (let key in this.itens)
+            yield this.itens[key];
+    }
+
+    * iterKeys(): Generator<string> {
+        for (let key in this.itens)
+            yield key;
+    }
+
     showAll(): void {
-        for (let [key, value] of this.downloadItensEntries()) {
+        for (let [key, value] of this.iterEntries())
             value.container.hidden = false;
-        }
     }
 
     hideAll(): void {
-        for (let [key, value] of this.downloadItensEntries()) {
+        for (let [key, value] of this.iterEntries())
             value.container.hidden = true;
-        }
     }
 
     hideFilter(callback: (value: DownloadItem, key: string) => boolean): void {
-        for (let [key, value] of this.downloadItensEntries()) {
+        for (let [key, value] of this.iterEntries())
             value.container.hidden = callback(value, key)
-        }
     }
 
     getItem(key: string): DownloadItem | undefined {
@@ -111,16 +138,14 @@ export class DownloadList implements IDownloadList {
         if (dependences.length > 0) {
             depsList = '<p>dependências:</p><ul>';
 
-            for (let dep of dependences) {
+            for (let dep of dependences)
                 depsList += `<li>${dep}</li>`;
-            }
 
             depsList += '</ul>\n';
         }
 
-        if (imgSrc !== undefined) {
+        if (imgSrc !== undefined)
             itemImg = `<img src="${imgSrc}" alt="not found">`;
-        }
 
         container.innerHTML = `
             <div class="title">
@@ -144,6 +169,24 @@ export class DownloadList implements IDownloadList {
         this.HTMLContainer.appendChild(container);
     }
 
+    async load(): Promise<number> {
+        if (!this.settings.loadUrl) return 2;
+
+        const resp = await fetch(this.settings.loadUrl);
+            
+            const data: DLIFactoryOptions[] = await resp.json();
+
+            data.forEach(value => {
+                this.createItem(value);
+            });
+
+        if (resp.status < 400) {
+            return 0;
+        } else {
+            return 1;
+        };
+    }
+
     private insertItem(key: string, value: DownloadItem): string {
         let suffixValue = 0;
         let suffixedKey = DownloadList.parseSuffix(key, suffixValue);
@@ -162,24 +205,6 @@ export class DownloadList implements IDownloadList {
         if (this.settings.loadOnInit === true) {
             this.load();
         }
-    }
-
-    async load(): Promise<number> {
-        if (!this.settings.loadUrl) return 2;
-
-        const resp = await fetch(this.settings.loadUrl);
-            
-            const data: DLIFactoryOptions[] = await resp.json();
-
-            data.forEach(value => {
-                this.createItem(value);
-            });
-
-        if (resp.status < 400) {
-            return 0;
-        } else {
-            return 1;
-        };
     }
 
     static fromContainerId(containerId: string, settings: ListSettings = {}) {

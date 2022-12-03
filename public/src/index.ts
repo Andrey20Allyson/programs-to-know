@@ -19,9 +19,7 @@ function onContentLoaded(ev: Event) {
 }
 
 function changeDisplay(DLInterface: IDownloadList) {
-    const keyWords = new Set(searchInput.value.toLowerCase().split(' '));
-
-    DLInterface.hideFilter(createHideFilterHandle(keyWords));
+    DLInterface.hideBySelection(searchInput.value);
 }
 
 function createHideFilterHandle(keyWords: Set<string>) {

@@ -1,4 +1,4 @@
-import { DownloadItem, IDownloadList } from "./loader/DLLoader.js";
+import { DownloadItem, IDownloadList } from "./loader/DownloadList.js";
 import loadItens from "./loader/LoadItens.js";
 
 function getSearch() {

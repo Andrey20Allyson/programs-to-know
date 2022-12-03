@@ -1,54 +1,8 @@
-export type ArchitectureEnum = '86' | '64';
+import { DownloadItemOptions, IDownloadItem } from "./DownloadItem.d";
+import { DownloadItemStorage, HideFilterCallback, IDownloadList, IIterableStorage, ListSettings, SelectionOptions } from './DownloadList.d';
+import { DownloadItem } from "./DownloadItem.js";
 
-export type HideFilterCallback = (d: DownloadItem, s: string) => boolean;
-
-export interface DLIFactoryOptions {
-    downloadLink: string;
-    imgSrc?: string;
-    title?: string;
-    dependences?: string[];
-    architecture: ArchitectureEnum;
-}
-
-export interface DownloadItem {
-    container: HTMLDivElement;
-    title: string;
-    desc: string;
-    dependences: string[];
-    architecture: ArchitectureEnum;
-}
-
-export interface SelectionOptions {
-    title?: string;
-}
-
-export interface IIterableStorage<T> {
-    iterEntries(): Generator<[string, T]>;
-    iterValues(): Generator<T>;
-    iterKeys(): Generator<string>
-}
-
-export interface IDownloadList {
-    showAll(): void;
-    hideAll(): void;
-    hideFilter(callback: (value: DownloadItem, key: string) => boolean): void;
-    hideBySelection(keyWords: string): void;
-    getItem(key: string): DownloadItem | undefined;
-    deleteItem(key: string): DownloadItem | undefined;
-    createItem(opts: DLIFactoryOptions): void;
-    load(): Promise<number>;
-}
-
-export interface ListSettings {
-    loadUrl?: string;
-    loadOnInit?: boolean;
-}
-
-export interface DownloadItemStorage {
-    [k: string]: DownloadItem;
-}
-
-export class DownloadList implements IDownloadList, IIterableStorage<DownloadItem> {
+export class DownloadList implements IDownloadList, IIterableStorage<IDownloadItem> {
     static defaultSettings: ListSettings = {
         loadUrl: undefined,
         loadOnInit: true,
@@ -58,9 +12,9 @@ export class DownloadList implements IDownloadList, IIterableStorage<DownloadIte
     private HTMLContainer: HTMLElement;
     private settings: ListSettings;
 
-    constructor(container: HTMLElement, settings: ListSettings) {
+    constructor(container: HTMLElement, settings: ListSettings = {}) {
         this.HTMLContainer = container;
-        this.settings = settings;
+        this.settings = Object.assign({}, DownloadList.defaultSettings, settings);
 
         this.loadSettings();
     }
@@ -69,7 +23,7 @@ export class DownloadList implements IDownloadList, IIterableStorage<DownloadIte
         const keyWords = new Set(text.toLowerCase().split(' '));
 
         this.hideFilter(item => {
-            let searchTitle = item.title.toLowerCase();
+            let searchTitle = item.getTitle().toLowerCase();
 
             for (let keyWord of keyWords)
                 if (!searchTitle.includes(keyWord))
@@ -79,12 +33,12 @@ export class DownloadList implements IDownloadList, IIterableStorage<DownloadIte
         });
     }
 
-    * iterEntries(): Generator<[string, DownloadItem]> {
+    * iterEntries(): Generator<[string, IDownloadItem]> {
         for (let key in this.itens)
             yield [key, this.itens[key]];
     }
 
-    * iterValues(): Generator<DownloadItem> {
+    * iterValues(): Generator<IDownloadItem> {
         for (let key in this.itens)
             yield this.itens[key];
     }
@@ -96,89 +50,55 @@ export class DownloadList implements IDownloadList, IIterableStorage<DownloadIte
 
     showAll(): void {
         for (let [key, value] of this.iterEntries())
-            value.container.hidden = false;
+            value.show();
     }
 
     hideAll(): void {
         for (let [key, value] of this.iterEntries())
-            value.container.hidden = true;
+            value.hide
     }
 
-    hideFilter(callback: (value: DownloadItem, key: string) => boolean): void {
-        for (let [key, value] of this.iterEntries())
-            value.container.hidden = callback(value, key)
+    hideFilter(callback: (value: IDownloadItem, key: string) => boolean): void {
+        for (let [key, value] of this.iterEntries()) {
+            const hide = callback(value, key);
+            value.setHidden(hide);
+        }
     }
 
-    getItem(key: string): DownloadItem | undefined {
+    getItem(key: string): IDownloadItem | undefined {
         return this.itens[key];
     }
 
-    deleteItem(key: string): DownloadItem | undefined {
+    deleteItem(key: string): IDownloadItem | undefined {
         const item = this.itens[key] ?? null;
 
         if (item === null)
             return item;
 
-        document.removeChild(item.container);
+        document.removeChild(item.getContent());
         delete this.itens[key];
 
         return item;
     }
 
-    createItem(opts: DLIFactoryOptions): void {
-        const { downloadLink, imgSrc, title='N/A', architecture='64', dependences=[] } = opts;
-        
-        if (!downloadLink)
-            throw new Error('required param is not defined!');
-
-        let depsList = '',
-            itemImg = '',
-            container = document.createElement('div');
-
-        if (dependences.length > 0) {
-            depsList = '<p>dependências:</p><ul>';
-
-            for (let dep of dependences)
-                depsList += `<li>${dep}</li>`;
-
-            depsList += '</ul>\n';
-        }
-
-        if (imgSrc !== undefined)
-            itemImg = `<img src="${imgSrc}" alt="not found">`;
-
-        container.innerHTML = `
-            <div class="title">
-                ${ itemImg }
-                <h2>${ title }</h2> 
-            </div>
-            <p>x${ architecture } ->
-                <a href="${ downloadLink }">download</a>
-            </p>
-            ${ depsList }
-        `;
+    createItem(opts: DownloadItemOptions): void {
+        const item = new DownloadItem(opts);
     
-        this.insertItem(title, {
-            container,
-            title,
-            architecture,
-            dependences,
-            desc: ''
-        });
+        this.insertItem(item.getTitle(), item);
 
-        this.HTMLContainer.appendChild(container);
+        this.HTMLContainer.appendChild(item.getContent());
     }
 
     async load(): Promise<number> {
         if (!this.settings.loadUrl) return 2;
 
         const resp = await fetch(this.settings.loadUrl);
-            
-            const data: DLIFactoryOptions[] = await resp.json();
+        
+        const data: DownloadItemOptions[] = await resp.json();
 
-            data.forEach(value => {
-                this.createItem(value);
-            });
+        data.forEach(value => {
+            this.createItem(value);
+        });
 
         if (resp.status < 400) {
             return 0;
@@ -187,7 +107,7 @@ export class DownloadList implements IDownloadList, IIterableStorage<DownloadIte
         };
     }
 
-    private insertItem(key: string, value: DownloadItem): string {
+    private insertItem(key: string, value: IDownloadItem): string {
         let suffixValue = 0;
         let suffixedKey = DownloadList.parseSuffix(key, suffixValue);
         
@@ -207,7 +127,7 @@ export class DownloadList implements IDownloadList, IIterableStorage<DownloadIte
         }
     }
 
-    static fromContainerId(containerId: string, settings: ListSettings = {}) {
+    static fromContainerId(containerId: string, settings?: ListSettings) {
         const element = document.getElementById(containerId); 
 
         if (!element) throw new Error(`container with id="${containerId}" not found!`);

@@ -1,4 +1,4 @@
-import { DownloadItem, IDownloadList } from "./loader/DownloadList.js";
+import { IDownloadList } from "./loader/DownloadList.d";
 import loadItens from "./loader/LoadItens.js";
 
 function getSearch() {
@@ -20,19 +20,6 @@ function onContentLoaded(ev: Event) {
 
 function changeDisplay(DLInterface: IDownloadList) {
     DLInterface.hideBySelection(searchInput.value);
-}
-
-function createHideFilterHandle(keyWords: Set<string>) {
-    return (item: DownloadItem) => {
-        let searchTitle = item.title.toLowerCase() ?? '';
-
-        for (let keyWord of keyWords) {
-            if (!searchTitle.includes(keyWord)) 
-                return true;
-        }
-
-        return false;
-    } 
 }
 
 document.addEventListener('DOMContentLoaded', onContentLoaded);

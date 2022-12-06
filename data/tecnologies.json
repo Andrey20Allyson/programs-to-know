@@ -16,21 +16,21 @@
   {
     "downloadLink": "https://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-workbench-community-8.0.30-winx64.msi",
     "dependences": [
-        "Microsoft .NET Framework 4.5",
-        "Visual C++ Redistributable for Visual Studio 2019",
-        "WampServer"
+      "Microsoft .NET Framework 4.5",
+      "Visual C++ Redistributable for Visual Studio 2019",
+      "WampServer"
     ],
     "title": "MySql Workbench",
     "imageSource": "./imgs/mySQLworkbench.jpeg"
   }, 
   {
-  "downloadLink": "https://code.visualstudio.com/docs/?dv=win",
-  "title": "Visual Studio Code",
-  "imageSource": "./imgs/vscode.jpeg"
+    "downloadLink": "https://code.visualstudio.com/docs/?dv=win",
+    "title": "Visual Studio Code",
+    "imageSource": "./imgs/vscode.jpeg"
   }, 
   {
-  "downloadLink": "https://nodejs.org/dist/v16.17.0/node-v16.17.0-x64.msi",
-  "title": "NodeJs",
-  "imageSource": "./imgs/nodejs.jpeg"
+    "downloadLink": "https://nodejs.org/dist/v16.17.0/node-v16.17.0-x64.msi",
+    "title": "NodeJs",
+    "imageSource": "./imgs/nodejs.jpeg"
   }
 ]

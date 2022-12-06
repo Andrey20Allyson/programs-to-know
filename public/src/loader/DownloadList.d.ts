@@ -4,6 +4,7 @@ export type HideFilterCallback = (d: IDownloadItem, s: string) => boolean;
 
 export interface SelectionOptions {
     title?: string;
+    hide?: boolean;
 }
 
 export interface IIterableStorage<T> {
@@ -16,7 +17,7 @@ export interface IDownloadList {
     showAll(): void;
     hideAll(): void;
     hideFilter(callback: (value: IDownloadItem, key: string) => boolean): void;
-    hideBySelection(keyWords: string): void;
+    hideBySelection(options: SelectionOptions): void;
     getItem(key: string): IDownloadItem | undefined;
     deleteItem(key: string): IDownloadItem | undefined;
     createItem(opts: DownloadItemOptions): void;

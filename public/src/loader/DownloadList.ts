@@ -19,18 +19,22 @@ export class DownloadList implements IDownloadList, IIterableStorage<IDownloadIt
         this.loadSettings();
     }
 
-    hideBySelection(text: string): void {
-        const keyWords = new Set(text.toLowerCase().split(' '));
+    hideBySelection(options: SelectionOptions): void {
+        const { title, hide = true } = options;
 
-        this.hideFilter(item => {
-            let searchTitle = item.getTitle().toLowerCase();
+        if (title) {
+            const keyWords = new Set(title.toLowerCase().split(' '));
 
-            for (let keyWord of keyWords)
-                if (!searchTitle.includes(keyWord))
-                    return true;
+            this.hideFilter(item => {
+                let searchTitle = item.getTitle().toLowerCase();
 
-            return false;
-        });
+                for (let keyWord of keyWords)
+                    if (!searchTitle.includes(keyWord))
+                        return hide;
+
+                return !hide;
+            });
+        }
     }
 
     * iterEntries(): Generator<[string, IDownloadItem]> {
@@ -58,7 +62,7 @@ export class DownloadList implements IDownloadList, IIterableStorage<IDownloadIt
             value.hide
     }
 
-    hideFilter(callback: (value: IDownloadItem, key: string) => boolean): void {
+    hideFilter(callback: HideFilterCallback): void {
         for (let [key, value] of this.iterEntries()) {
             const hide = callback(value, key);
             value.setHidden(hide);

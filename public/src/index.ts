@@ -19,7 +19,7 @@ function onContentLoaded(ev: Event) {
 }
 
 function changeDisplay(DLInterface: IDownloadList) {
-    DLInterface.hideBySelection(searchInput.value);
+    DLInterface.hideBySelection({ title: searchInput.value });
 }
 
 document.addEventListener('DOMContentLoaded', onContentLoaded);

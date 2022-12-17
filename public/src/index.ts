@@ -15,7 +15,10 @@ const searchInput = getSearch();
 function onContentLoaded(ev: Event) {
     const DLInterface = loadItens();
 
-    searchInput.addEventListener('keydown', () => setInterval(changeDisplay.bind(undefined, DLInterface), 50));
+    searchInput.addEventListener('keydown', (ev) => {
+        if (ev.key == 'Enter')
+            changeDisplay(DLInterface);
+    });
 }
 
 function changeDisplay(DLInterface: IDownloadList) {

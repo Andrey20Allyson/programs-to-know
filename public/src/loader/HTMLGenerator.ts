@@ -18,8 +18,9 @@ export class HTMLGenerator implements IHTMLGenerator {
 
     async generate(pageName: string, ...args: string[]): Promise<string> {
         let page = await this.requestHTML(pageName);
+        let iterator = args.values();
 
-        page = page.replace(HTMLGenerator.replacer, sub => args.shift() ?? sub);
+        page = page.replace(HTMLGenerator.replacer, sub => iterator.next().value ?? sub);
 
         return page;
     }

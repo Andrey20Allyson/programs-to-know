@@ -1,16 +1,17 @@
 import { Router } from 'express';
 import { DataBase } from '../../database';
 import { OkPacket } from 'mysql';
+import { sanitize } from '../../database/sanitizer';
 
 export interface ITecnologiesDBColumns {
     [k: string]: string;
 }
 
-export const tecnologiesDBColumns: ITecnologiesDBColumns = {
-    title: 'title',
-    downloadLink: 'downloadLink',
-    imageUrl: 'imageUrl',
-    description: 'desc'
+export const tecnologiesDBFields: ITecnologiesDBColumns = {
+    'title'         :   'title',
+    'downloadLink'  :   'downloadLink',
+    'imageUrl'      :   'imageUrl',
+    'description'   :   'desc'
 };
 
 export function StorageRoute() {
@@ -21,9 +22,21 @@ export function StorageRoute() {
     });
 
     router.get('/tecs', async (req, res, next) => {
-        const { type } = req.query;
-    
-        if (type === 'json') {}
+        const { type, id } = req.query;
+
+        try {
+            if (type === 'json') {
+                const result = await dataBase.query(`SELECT * FROM tecnologies WHERE \`id\` > 3;`);
+                
+                res.json(result.response);
+            } else if (type === 'xml') {
+
+            }
+        } catch (e) {
+            console.log(e);
+        } finally {
+            res.end();
+        }
     });
     
     router.post('/tecs', async (req, res, next) => {
@@ -32,22 +45,26 @@ export function StorageRoute() {
         if (typeof data !== 'string') return;
 
         try {
-            // const object: any = JSON.parse(data);
+            const object = JSON.parse(data);
 
-            // const columns: string[] = [];
-            // const values: string[] = [];
+            const fields: string[] = [];
+            const values: string[] = [];
 
-            // for (const key in tecnologiesDBColumns) {
-            //     const prop = tecnologiesDBColumns[key];
+            for (const field in tecnologiesDBFields) {
+                const prop = tecnologiesDBFields[field];
+                const value = object[prop];
 
-            //     if (object[prop]) {
-            //         columns.push(key);
-            //         values.push(typeof object[prop] === 'string'? `"${object[prop]}"`: `${object[prop]}`);
-            //     }
-            // }
+                if (value) {
+                    const safeValue = sanitize(value);
 
-            // const res = await dataBase.query<OkPacket>(`insert into tecnologies (${columns.toString()}) values (${values.toString()});`);
+                    fields.push(field);
+                    values.push(safeValue);
+                }
+            }
+
+            const result = await dataBase.query<OkPacket>(`INSERT INTO tecnologies (${fields.toString()}) VALUES (${values.toString()});`);
             
+            res.json(result);
         } catch(err) {
             console.log(err);
         }

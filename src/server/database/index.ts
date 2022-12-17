@@ -1,7 +1,7 @@
 import { Connection, ConnectionConfig, createConnection } from 'mysql';
 import { WhereConditionOperations, IDataBase, QueryReturn, Primitive, SelectOptions, WhereCondition } from './index.d'
 
-export class DataBase implements IDataBase{
+export class DataBase implements IDataBase {
     private connection: Connection;
 
     private constructor(options: ConnectionConfig) {
@@ -10,7 +10,7 @@ export class DataBase implements IDataBase{
 
     query<T>(query: string) {
         return new Promise<QueryReturn<T>>((resolve, reject) => {
-            this.connection.query('', (err, response, fields) => {
+            this.connection.query(query, (err, response, fields) => {
                 if (err) reject(err);
 
                 resolve({

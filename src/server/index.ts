@@ -21,7 +21,7 @@ export class Server implements IServer {
                 console.log(`> Now server is listening http://${ hostname + (port === 80? '': `:${port}` )}/`);
             });
         } else {
-            throw new Error('server already started!')
+            throw new Error('server already started!');
         }
     }
 

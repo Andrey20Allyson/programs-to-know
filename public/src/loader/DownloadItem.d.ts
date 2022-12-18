@@ -2,7 +2,7 @@ export type ArchitectureEnum = '86' | '64';
 
 export interface DownloadItemOptions {
     title?: string;
-    imageSource?: string;
+    imageUrl?: string;
     desc?: string;
     dependences?: string[];
     architecture?: ArchitectureEnum;
@@ -10,7 +10,6 @@ export interface DownloadItemOptions {
 }
 
 export interface IDownloadItem {
-    createContent(): HTMLElement;
     setContent(content: HTMLElement): void;
     getContent(): HTMLElement;
     getTitle(): string;

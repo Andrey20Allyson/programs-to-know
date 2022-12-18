@@ -85,8 +85,8 @@ export class DownloadList implements IDownloadList, IIterableStorage<IDownloadIt
         return item;
     }
 
-    createItem(opts: DownloadItemOptions): void {
-        const item = new DownloadItem(opts);
+    async createItem(opts: DownloadItemOptions): Promise<void> {
+        const item = await DownloadItem.createItem(opts);
     
         this.insertItem(item.getTitle(), item);
 
@@ -100,9 +100,8 @@ export class DownloadList implements IDownloadList, IIterableStorage<IDownloadIt
         
         const data: DownloadItemOptions[] = await resp.json();
 
-        data.forEach(value => {
-            this.createItem(value);
-        });
+        for (const value of data)
+            await this.createItem(value);
 
         if (resp.status < 400) {
             return 0;

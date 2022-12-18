@@ -1,5 +1,5 @@
 import { IHTMLGenerator } from './HTMLGenerator.d';
-import { Cache } from './Cache';
+import { Cache } from './Cache.js';
 import { ICache } from './Cache.d'
 
 export class HTMLRequestError extends Error {
@@ -9,7 +9,7 @@ export class HTMLRequestError extends Error {
 }
 
 export class HTMLGenerator implements IHTMLGenerator {
-    static readonly replacer = /#.+#/g;
+    static readonly replacer = /#[\w\d]+#/g;
     private cache: ICache;
 
     constructor() {

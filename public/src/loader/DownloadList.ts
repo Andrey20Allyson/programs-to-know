@@ -86,6 +86,8 @@ export class DownloadList implements IDownloadList, IIterableStorage<IDownloadIt
     }
 
     async createItem(opts: DownloadItemOptions): Promise<void> {
+        opts.title = this.createNewKey(opts.title ?? 'Untitled');
+        
         const item = await DownloadItem.createItem(opts);
     
         this.insertItem(item.title, item);
@@ -110,7 +112,7 @@ export class DownloadList implements IDownloadList, IIterableStorage<IDownloadIt
         };
     }
 
-    private insertItem(key: string, value: IDownloadItem): string {
+    private createNewKey(key: string) {
         let suffixValue = 0;
         let suffixedKey = DownloadList.parseSuffix(key, suffixValue);
         
@@ -119,9 +121,13 @@ export class DownloadList implements IDownloadList, IIterableStorage<IDownloadIt
             suffixedKey = DownloadList.parseSuffix(key, suffixValue);
         }
 
-        this.itens[suffixedKey] = value;
-
         return suffixedKey;
+    }
+
+    private insertItem(key: string, value: IDownloadItem): string {
+        this.itens[key] = value;
+
+        return key;
     }
 
     private loadSettings() {

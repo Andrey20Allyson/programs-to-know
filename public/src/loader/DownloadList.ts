@@ -26,7 +26,7 @@ export class DownloadList implements IDownloadList, IIterableStorage<IDownloadIt
             const keyWords = new Set(title.toLowerCase().split(' '));
 
             this.hideFilter(item => {
-                let searchTitle = item.getTitle().toLowerCase();
+                let searchTitle = item.title.toLowerCase();
 
                 for (let keyWord of keyWords)
                     if (!searchTitle.includes(keyWord))
@@ -88,7 +88,7 @@ export class DownloadList implements IDownloadList, IIterableStorage<IDownloadIt
     async createItem(opts: DownloadItemOptions): Promise<void> {
         const item = await DownloadItem.createItem(opts);
     
-        this.insertItem(item.getTitle(), item);
+        this.insertItem(item.title, item);
 
         this.HTMLContainer.appendChild(item.getContent());
     }

@@ -5,89 +5,80 @@ import { HTMLGenerator } from './HTMLGenerator.js';
 export class DownloadItem implements IDownloadItem {
     private static generator: IHTMLGenerator = new HTMLGenerator();
 
-    private content: HTMLElement;
+    private content?: HTMLElement;
+    
+    readonly title: string;
+    readonly desc: string;
+    readonly dependences: string[];
+    readonly imageUrl: string;
+    readonly architecture: ArchitectureEnum;
+    readonly downloadUrl: string;
 
-    private constructor(content: HTMLElement) {
-        this.content = content;
+    private constructor(options: DownloadItemOptions) {
+        this.title = options.title ?? 'N/A';
+        this.desc = options.desc ?? '';
+        this.dependences = options.dependences ?? [];
+        this.imageUrl = options.imageUrl ?? '';
+        this.architecture = options.architecture ?? '64';
+        this.downloadUrl = options.downloadUrl ?? '';
     }
 
     setContent(content: HTMLElement): void {
-
+        this.content = content;
     }
 
     getContent(): HTMLElement {
+        if (!this.content) throw new Error('Content hasn\'t initializated!');
+
         return this.content;
     }
 
-    getTitle(): string {
-        return '';
-    }
-
-    getImageSource(): string {
-        return '';
-    }
-
-    getDesc(): string {
-        return '';
-    }
-
-    getDependences(): string[] {
-        return [];
-    }
-
-    getDownloadUrl(): string | undefined {
-        return '';
-    }
-
     setHidden(hidden: boolean): void {
-        
+        const content = this.getContent();
+
+        content.hidden = hidden;
     }
 
     isHidden(): boolean {
-        return false;
+        return this.getContent().hidden;
     }
 
     hide(): void {
-        
+        this.setHidden(true);
     }
 
     show(): void {
-
-    }
-
-    getArchitecture(): ArchitectureEnum {
-        return '64';
+        this.setHidden(false);
     }
 
     static async createItem(options: DownloadItemOptions): Promise<IDownloadItem> {
-        const content = await this.createContent(options);
+        const item = new this(options);
 
-        const item = new this(content);
+        await item.initializeContent();
         
         return item;
     }
 
-    static async createContent(options: DownloadItemOptions): Promise<HTMLElement> {
-        const { architecture = '64', dependences = [], desc = '', downloadUrl = 's', imageUrl: imageSource = '', title = '' } = options;
+    async initializeContent() {
+        this.setContent(await this.createContent());
+    }
 
-        console.log(options);
-
+    async createContent(): Promise<HTMLElement> {
+        const generator = DownloadItem.generator;
         const content = document.createElement('div');
 
         let deps = '';
 
-        if (dependences.length > 0) {
+        if (this.dependences.length > 0) {
             let list = '';
             
-            for (const dependence of dependences)
-                list += await this.generator.generate('Dependence', dependence);
+            for (const dependence of this.dependences)
+                list += await generator.generate('Dependence', dependence);
 
-            deps = await this.generator.generate('DependenceList', list);
+            deps = await generator.generate('DependenceList', list);
         }
 
-        console.log(downloadUrl);
-
-        content.innerHTML = await this.generator.generate('DownloadItem', imageSource, title, deps, architecture, downloadUrl);
+        content.innerHTML = await generator.generate('DownloadItem', this.imageUrl, this.title, deps, this.architecture, this.downloadUrl);
 
         return content;
     }

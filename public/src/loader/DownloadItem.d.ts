@@ -10,14 +10,15 @@ export interface DownloadItemOptions {
 }
 
 export interface IDownloadItem {
+    title: string;
+    imageUrl: string;
+    dependences: string[];
+    imageUrl: string;
+    architecture: ArchitectureEnum;
+    downloadUrl: string; 
+
     setContent(content: HTMLElement): void;
     getContent(): HTMLElement;
-    getTitle(): string;
-    getImageSource(): string;
-    getDesc(): string;
-    getDependences(): string[];
-    getArchitecture(): ArchitectureEnum;
-    getDownloadUrl(): string | undefined;
     setHidden(hidden: boolean): void;
     isHidden(): boolean;
     hide(): void;

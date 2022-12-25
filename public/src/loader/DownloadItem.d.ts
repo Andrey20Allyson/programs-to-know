@@ -13,7 +13,7 @@ export interface IDownloadItem {
     title: string;
     imageUrl: string;
     dependences: string[];
-    imageUrl: string;
+    description: string;
     architecture: ArchitectureEnum;
     downloadUrl: string; 
 

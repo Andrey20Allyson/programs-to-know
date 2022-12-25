@@ -8,19 +8,19 @@ export class DownloadItem implements IDownloadItem {
     private content?: HTMLElement;
     
     readonly title: string;
-    readonly desc: string;
     readonly dependences: string[];
     readonly imageUrl: string;
     readonly architecture: ArchitectureEnum;
+    readonly description: string;
     readonly downloadUrl: string;
 
     private constructor(options: DownloadItemOptions) {
         this.title = options.title ?? 'N/A';
-        this.desc = options.desc ?? '';
         this.dependences = options.dependences ?? [];
         this.imageUrl = options.imageUrl ?? '';
         this.architecture = options.architecture ?? '64';
         this.downloadUrl = options.downloadUrl ?? '';
+        this.description = options.desc ?? '';
     }
 
     setContent(content: HTMLElement): void {

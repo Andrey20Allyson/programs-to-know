@@ -1,7 +1,8 @@
 import express, { Express } from 'express';
 import { createServer, Server as HTTPServer } from 'http';
 import { IServer } from './index.d'
-import { ApiRouter } from './api/routes';
+import { createAPI } from './api';
+import bodyPaser from 'body-parser';
 
 export class Server implements IServer {
     private app: Express;
@@ -11,8 +12,11 @@ export class Server implements IServer {
         this.app = express();
         this.server = createServer(this.app);
 
+        this.app.use(express.urlencoded({ extended: false }));
+        this.app.use(express.json());
+
         this.app.use(express.static('public'));
-        this.app.use('/api', ApiRouter());
+        this.app.use('/api', createAPI());
     }
     
     start(port: number = 3000, hostname: string = 'localhost'): void {

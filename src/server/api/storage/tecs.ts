@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import { DataBase } from '../../database';
+import { Router, Request } from 'express';
+import { IDataBase } from '../../database/index.d';
 import { OkPacket } from 'mysql';
 import { sanitize } from '../../database/sanitizer';
 
@@ -14,12 +14,8 @@ export const tecnologiesDBFields: ITecnologiesDBColumns = {
     'description'   :   'desc'
 };
 
-export function StorageRoute() {
+export function StorageRoute(dataBase: IDataBase) {
     const router = Router();
-    const dataBase = DataBase.createDataBase({
-        user: 'root',
-        database: 'programs-to-know-db'
-    });
 
     router.get('/tecs', async (req, res, next) => {
         const { type, id } = req.query;
@@ -30,7 +26,7 @@ export function StorageRoute() {
                 
                 res.json(result.response);
             } else if (type === 'xml') {
-
+                
             }
         } catch (e) {
             console.log(e);
@@ -39,20 +35,16 @@ export function StorageRoute() {
         }
     });
     
-    router.post('/tecs', async (req, res, next) => {
-        const { data } = req.query;
-    
-        if (typeof data !== 'string') return;
+    router.post('/tecs', async (req: Request, res, next) => {
+        const { body } = req;
 
         try {
-            const object = JSON.parse(data);
-
             const fields: string[] = [];
             const values: string[] = [];
 
             for (const field in tecnologiesDBFields) {
                 const prop = tecnologiesDBFields[field];
-                const value = object[prop];
+                const value = body[prop];
 
                 if (value) {
                     const safeValue = sanitize(value);

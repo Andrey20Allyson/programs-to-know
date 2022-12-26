@@ -86,11 +86,11 @@ node index.js
 - [x] Um sistema que gera o layout
 - [x] Requisitar dados do Servidor
 - [x] Um site estilizado
-- [ ] Interface de cadastro de dados
+- [x] Interface de cadastro de dados
 - [ ] Animações
 - [ ] Pop-ups descritivos
 - [ ] Ordenação dinâmica
 ### Back-End
 - [x] Enviar dados ao Front-End
-- [ ] Implementar um DB
+- [x] Implementar um DB
 - [ ] Um servidor para hospedar o projeto

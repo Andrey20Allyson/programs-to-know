@@ -3,7 +3,7 @@
     "target": "ES2022",
     "module": "ES2022",
     "rootDir": "./",
-    "outDir": "../dist",
+    "outDir": "../dist/client",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,

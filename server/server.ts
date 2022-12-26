@@ -1,8 +1,7 @@
 import express, { Express } from 'express';
 import { createServer, Server as HTTPServer } from 'http';
-import { IServer } from './index.d'
-import { createAPI } from './api';
-import bodyPaser from 'body-parser';
+import { IServer } from './server.d'
+import { createAPI } from './routes/api';
 
 export class Server implements IServer {
     private app: Express;
@@ -20,13 +19,11 @@ export class Server implements IServer {
     }
     
     start(port: number = 3000, hostname: string = 'localhost'): void {
-        if (!this.server.listening) {
-            this.server.listen(port, hostname, () => {
-                console.log(`> Now server is listening http://${ hostname + (port === 80? '': `:${port}` )}/`);
-            });
-        } else {
-            throw new Error('server already started!');
-        }
+        if (this.server.listening) throw new Error('server already started!');
+        
+        this.server.listen(port, hostname, () => {
+            console.log(`> Now server is listening http://${ hostname + (port === 80? '': `:${port}` )}/`);
+        });
     }
 
     getApp(): express.Express {

@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build:all": "tsc -p src && tsc -p public/src",
-    "build:server": "tsc -p src",
-    "build:client": "tsc -p public/src",
-    "start": "node dist/index.js",
-    "dev": "ts-node-dev src/index.ts --transpile-only"
+    "build:all": "tsc -p server && tsc -p client",
+    "build:server": "tsc -p server",
+    "build:client": "tsc -p client",
+    "start": "node dist/server/index.js",
+    "dev": "ts-node-dev server/index.ts --transpile-only"
   },
   "keywords": [],
   "author": "",

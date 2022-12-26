@@ -1,7 +1,7 @@
 import { Router, Request } from 'express';
-import { IDataBase } from '../../database/index.d';
+import { IDataBase } from '../../../database/index.d';
 import { OkPacket } from 'mysql';
-import { sanitize } from '../../database/sanitizer';
+import { sanitize } from '../../../database/sanitizer';
 
 export interface ITecnologiesDBColumns {
     [k: string]: string;

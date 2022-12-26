@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { StorageRoute } from "./storage/tecs"; 
-import { DataBase } from '../database';
+import { DataBase } from '../../database';
 
 export function createAPI() {
     const router = Router();

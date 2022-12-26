@@ -1,4 +1,4 @@
-import { ArchitectureEnum, DownloadItemOptions, IDownloadItem } from './DownloadItem.d'
+import { ArchitectureEnum, DownloadItemOptions, IDownloadItem } from './DownloadItem'
 
 export type HideFilterCallback = (d: IDownloadItem, s: string) => boolean;
 

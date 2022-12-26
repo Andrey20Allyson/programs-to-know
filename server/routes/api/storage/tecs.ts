@@ -12,7 +12,8 @@ export const tecnologiesDBFields: DBFields = {
     'title'         :   'title',
     'downloadSource':   'downloadUrl',
     'imageUrl'      :   'imageUrl',
-    'description'   :   'description'
+    'description'   :   'description',
+    'architecture'  :   'architecture'
 };
 
 export function StorageRoute(dataBase: IDataBase) {
@@ -22,14 +23,35 @@ export function StorageRoute(dataBase: IDataBase) {
         const { id, titleQ } = req.query;
 
         try {
-            let title = '';
+            let title = '"%%"';
             
-            if (typeof titleQ === 'string')
-                title = sanitize(titleQ);
+            if (typeof titleQ === 'string') {
+                title = sanitize(`%${titleQ}%`);
+                // title = `"%${titleQ}%"`;
+            }
 
-            const result = await dataBase.query(`SELECT * FROM tecnologies WHERE \`title\` LIKE "%${title}%" LIMIT 4;`);
+            const result = await dataBase.query<any[]>(`SELECT * FROM tecnologies WHERE \`title\` LIKE ${title} LIMIT 4;`);
+
+            const dbResp = result.response;
+            const serverResp = [];
             
-            res.json(result.response);
+            for (const data of dbResp) {
+                const newDTO: any = {};
+
+                for (const field in tecnologiesDBFields) {
+                    const prop = tecnologiesDBFields[field];
+                    const value = data[field];
+
+                    newDTO[prop] = value ?? null;
+                }
+
+                newDTO['dependences'] = [];
+
+                serverResp.push(newDTO);
+            }
+            
+            res.setHeader('Content-Type', 'application/json');
+            res.json(serverResp);
         } catch (e) {
             console.log(e);
         } finally {

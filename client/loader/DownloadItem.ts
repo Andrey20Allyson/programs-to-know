@@ -1,6 +1,7 @@
 import { ArchitectureEnum, DownloadItemOptions, IDownloadItem } from './DownloadItem.d'
 import { IHTMLGenerator } from './HTMLGenerator.d';
 import { HTMLGenerator } from './HTMLGenerator.js';
+import { TecnologyDTO } from '../api/lib/TecsRequester.d';
 
 export class DownloadItem implements IDownloadItem {
     private static generator: IHTMLGenerator = new HTMLGenerator();
@@ -14,13 +15,13 @@ export class DownloadItem implements IDownloadItem {
     readonly description: string;
     readonly downloadUrl: string;
 
-    private constructor(options: DownloadItemOptions) {
+    private constructor(options: TecnologyDTO) {
         this.title = options.title ?? 'N/A';
         this.dependences = options.dependences ?? [];
         this.imageUrl = options.imageUrl ?? '';
         this.architecture = options.architecture ?? '64';
         this.downloadUrl = options.downloadUrl ?? '';
-        this.description = options.desc ?? '';
+        this.description = options.description ?? '';
     }
 
     setContent(content: HTMLElement): void {
@@ -51,7 +52,7 @@ export class DownloadItem implements IDownloadItem {
         this.setHidden(false);
     }
 
-    static async createItem(options: DownloadItemOptions): Promise<IDownloadItem> {
+    static async createItem(options: TecnologyDTO): Promise<IDownloadItem> {
         const item = new this(options);
 
         await item.initializeContent();

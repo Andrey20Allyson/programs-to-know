@@ -1,12 +1,10 @@
 import { DownloadItemOptions, IDownloadItem } from "./DownloadItem.d";
 import { DownloadItemStorage, HideFilterCallback, IDownloadList, IIterableStorage, ListSettings, SelectionOptions } from './DownloadList.d';
 import { DownloadItem } from "./DownloadItem.js";
+import { TecnologyDTO } from '../api/lib/TecsRequester.d';
 
 export class DownloadList implements IDownloadList, IIterableStorage<IDownloadItem> {
-    static defaultSettings: ListSettings = {
-        loadUrl: undefined,
-        loadOnInit: true,
-    }
+    static defaultSettings: ListSettings = {}
 
     private itens: DownloadItemStorage = {};
     private HTMLContainer: HTMLElement;
@@ -74,18 +72,17 @@ export class DownloadList implements IDownloadList, IIterableStorage<IDownloadIt
     }
 
     deleteItem(key: string): IDownloadItem | undefined {
-        const item = this.itens[key] ?? null;
+        const item = this.itens[key];
 
-        if (item === null)
-            return item;
+        if (item === undefined) return item;
 
-        document.removeChild(item.getContent());
+        item.getContent().remove();
         delete this.itens[key];
 
         return item;
     }
 
-    async createItem(opts: DownloadItemOptions): Promise<void> {
+    async createItem(opts: TecnologyDTO): Promise<void> {
         opts.title = this.createNewKey(opts.title ?? 'Untitled');
         
         const item = await DownloadItem.createItem(opts);
@@ -95,21 +92,16 @@ export class DownloadList implements IDownloadList, IIterableStorage<IDownloadIt
         this.HTMLContainer.appendChild(item.getContent());
     }
 
-    async load(): Promise<number> {
-        if (!this.settings.loadUrl) return 2;
+    deleteAll() {
+        for (const key in this.itens)
+            this.deleteItem(key);
+    }
 
-        const resp = await fetch(this.settings.loadUrl);
-        
-        const data: DownloadItemOptions[] = await resp.json();
+    async load(data: TecnologyDTO[]): Promise<void> {
+        this.deleteAll();
 
         for (const value of data)
             await this.createItem(value);
-
-        if (resp.status < 400) {
-            return 0;
-        } else {
-            return 1;
-        };
     }
 
     private createNewKey(key: string) {
@@ -131,9 +123,7 @@ export class DownloadList implements IDownloadList, IIterableStorage<IDownloadIt
     }
 
     private loadSettings() {
-        if (this.settings.loadOnInit === true) {
-            this.load();
-        }
+        
     }
 
     static fromContainerId(containerId: string, settings?: ListSettings) {

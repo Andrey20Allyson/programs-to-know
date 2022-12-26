@@ -2,7 +2,7 @@ import { Requester } from "./Requester.js";
 import { Response } from './Requester.d';
 import { TecnologyDTO } from './TecsRequester.d'
 
-export class TecsRequester extends Requester<TecnologyDTO> {
+export class TecsRequester extends Requester<TecnologyDTO[]> {
     protected DTOProps: string[] = [
         'title',
         'description',
@@ -12,19 +12,36 @@ export class TecsRequester extends Requester<TecnologyDTO> {
         'architecture'
     ];
 
-    async get(...args: any[]): Promise<Response<TecnologyDTO>> {
-        const resp = await fetch(`${this.url}?type=json`, {
+    protected postHeaders: HeadersInit = {
+        'Content-Type': 'application/json',
+    }
+
+    get(): Promise<Response<TecnologyDTO[]>>;
+    get(title: string): Promise<Response<TecnologyDTO[]>>;
+    async get(title?: string): Promise<Response<TecnologyDTO[]>> {
+        const resp = await fetch(`${this.url}?titleQ=${title ?? ''}`, {
             headers: {
                 'Accept': 'application/json'
             }
         });
 
-        let data: TecnologyDTO | undefined;
+        let data: TecnologyDTO[] | undefined;
 
-        if (resp.headers.get('Content-Type') === 'application/json') {
-            const jsonData = await resp.json();
+        const contentType = resp.headers.get('Content-Type') ?? '';
 
-            data = this.isDTO(jsonData)? jsonData: undefined;
+        if (contentType.includes('application/json')) {
+            const jsonData: any[] = await resp.json();
+
+            let isDTO = true;
+
+            for (const data of jsonData) {
+                if (!this.isDTO(data)) {
+                    isDTO = false;
+                    break;
+                }
+            }
+
+            data = isDTO? jsonData: undefined;
         }
 
         return {
@@ -33,13 +50,11 @@ export class TecsRequester extends Requester<TecnologyDTO> {
         }
     }
 
-    async post(value: TecnologyDTO): Promise<Response<undefined>> {
+    async post(values: TecnologyDTO[]): Promise<Response<undefined>> {
         const resp = await fetch(`${this.url}?type=json`, {
             method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(value)
+            headers: this.postHeaders,
+            body: JSON.stringify(values)
         });
 
         return { status: resp.status };

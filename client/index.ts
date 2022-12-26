@@ -1,5 +1,6 @@
 import { IDownloadList } from "./loader/DownloadList.d";
-import loadItens from "./loader/LoadItens.js";
+import { DownloadList } from './loader/DownloadList.js';
+import { createTecsRequester } from './api/requester.js';
 
 function getSearch() {
     const searchInput = document.getElementById('searchIn');
@@ -11,18 +12,22 @@ function getSearch() {
 }
 
 const searchInput = getSearch();
+const tecsRequester = createTecsRequester();
 
-function onContentLoaded(ev: Event) {
-    const DLInterface = loadItens();
+async function onContentLoaded(ev: Event) {
+    const tecs = await tecsRequester.get();
 
-    searchInput.addEventListener('keydown', (ev) => {
-        if (ev.key == 'Enter')
-            changeDisplay(DLInterface);
+    const DLInterface = DownloadList.fromContainerId('downloadlist');
+
+    DLInterface.load(tecs.data ?? []);
+
+    searchInput.addEventListener('keydown', async (ev) => {
+        if (ev.key === 'Enter') {
+            const { data = [] } = await tecsRequester.get(searchInput.value);
+            
+            DLInterface.load(data);
+        }
     });
-}
-
-function changeDisplay(DLInterface: IDownloadList) {
-    DLInterface.hideBySelection({ title: searchInput.value });
 }
 
 document.addEventListener('DOMContentLoaded', onContentLoaded);

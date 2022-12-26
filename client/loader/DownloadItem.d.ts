@@ -1,3 +1,5 @@
+import { TecnologyDTO } from '../api/lib/TecsRequester.d';
+
 export type ArchitectureEnum = '86' | '64';
 
 export interface DownloadItemOptions {

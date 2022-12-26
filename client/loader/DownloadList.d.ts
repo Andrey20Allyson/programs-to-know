@@ -1,4 +1,5 @@
-import { ArchitectureEnum, DownloadItemOptions, IDownloadItem } from './DownloadItem'
+import { ArchitectureEnum, DownloadItemOptions, IDownloadItem } from './DownloadItem.d'
+import { TecnologyDTO } from '../api/lib/TecsRequester.d'
 
 export type HideFilterCallback = (d: IDownloadItem, s: string) => boolean;
 
@@ -20,13 +21,12 @@ export interface IDownloadList {
     hideBySelection(options: SelectionOptions): void;
     getItem(key: string): IDownloadItem | undefined;
     deleteItem(key: string): IDownloadItem | undefined;
-    createItem(opts: DownloadItemOptions): void;
-    load(): Promise<number>;
+    createItem(opts: TecnologyDTO): void;
+    load(data: TecnologyDTO[]): Promise<void>;
 }
 
 export interface ListSettings {
-    loadUrl?: string;
-    loadOnInit?: boolean;
+    
 }
 
 export interface DownloadItemStorage {

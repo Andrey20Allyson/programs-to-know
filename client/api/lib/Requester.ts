@@ -9,8 +9,9 @@ export abstract class Requester<DTO = Object> implements IRequester<DTO> {
     }
 
     protected isDTO(value: any) {
-        for (const prop of this.DTOProps)
-            if (Object.hasOwn(value, prop)) return false;
+        for (const prop of this.DTOProps) {
+            if (value[prop] === undefined) return false;
+        }
 
         return true;
     }

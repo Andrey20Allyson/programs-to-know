@@ -12,9 +12,6 @@ export class Server implements IServer {
         this.app = express();
         this.server = createServer(this.app);
 
-        this.app.use(express.urlencoded({ extended: false }));
-        this.app.use(express.json());
-
         this.app.use('/dist', createDistRoute());
 
         this.app.use(express.static('public'));

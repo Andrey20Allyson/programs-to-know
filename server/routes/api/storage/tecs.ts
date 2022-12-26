@@ -3,15 +3,16 @@ import { IDataBase } from '../../../database/index.d';
 import { OkPacket } from 'mysql';
 import { sanitize } from '../../../database/sanitizer';
 
-export interface ITecnologiesDBColumns {
+export interface DBFields {
     [k: string]: string;
 }
 
-export const tecnologiesDBFields: ITecnologiesDBColumns = {
+//  database_field  :   DTO_prop
+export const tecnologiesDBFields: DBFields = {
     'title'         :   'title',
-    'downloadLink'  :   'downloadLink',
+    'downloadSource':   'downloadUrl',
     'imageUrl'      :   'imageUrl',
-    'description'   :   'desc'
+    'description'   :   'description'
 };
 
 export function StorageRoute(dataBase: IDataBase) {

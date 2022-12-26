@@ -63,12 +63,14 @@ export function StorageRoute(dataBase: IDataBase) {
         const { body } = req;
 
         try {
+            const data = body[0];
+
             const fields: string[] = [];
             const values: string[] = [];
 
             for (const field in tecnologiesDBFields) {
                 const prop = tecnologiesDBFields[field];
-                const value = body[prop];
+                const value = data[prop];
 
                 if (value) {
                     const safeValue = sanitize(value);

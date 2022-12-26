@@ -2,6 +2,7 @@ import express, { Express } from 'express';
 import { createServer, Server as HTTPServer } from 'http';
 import { IServer } from './server.d'
 import { createAPI } from './routes/api';
+import { createDistRoute } from './routes/dist';
 
 export class Server implements IServer {
     private app: Express;
@@ -13,6 +14,8 @@ export class Server implements IServer {
 
         this.app.use(express.urlencoded({ extended: false }));
         this.app.use(express.json());
+
+        this.app.use('/dist', createDistRoute());
 
         this.app.use(express.static('public'));
         this.app.use('/api', createAPI());

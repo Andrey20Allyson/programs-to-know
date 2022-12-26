@@ -18,16 +18,17 @@ export function StorageRoute(dataBase: IDataBase) {
     const router = Router();
 
     router.get('/tecs', async (req, res, next) => {
-        const { type, id } = req.query;
+        const { id, titleQ } = req.query;
 
         try {
-            if (type === 'json') {
-                const result = await dataBase.query(`SELECT * FROM tecnologies WHERE \`id\` > 3;`);
-                
-                res.json(result.response);
-            } else if (type === 'xml') {
-                
-            }
+            let title = '';
+            
+            if (typeof titleQ === 'string')
+                title = sanitize(titleQ);
+
+            const result = await dataBase.query(`SELECT * FROM tecnologies WHERE \`title\` LIKE "%${title}%" LIMIT 4;`);
+            
+            res.json(result.response);
         } catch (e) {
             console.log(e);
         } finally {
@@ -55,7 +56,7 @@ export function StorageRoute(dataBase: IDataBase) {
             }
 
             const result = await dataBase.query<OkPacket>(`INSERT INTO tecnologies (${fields.toString()}) VALUES (${values.toString()});`);
-            
+
             res.json(result);
         } catch(err) {
             console.log(err);

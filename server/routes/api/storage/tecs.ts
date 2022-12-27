@@ -25,10 +25,8 @@ export function StorageRoute(dataBase: IDataBase) {
         try {
             let title = '"%%"';
             
-            if (typeof titleQ === 'string') {
+            if (typeof titleQ === 'string')
                 title = sanitize(`%${titleQ}%`);
-                // title = `"%${titleQ}%"`;
-            }
 
             const result = await dataBase.query<any[]>(`SELECT * FROM tecnologies WHERE \`title\` LIKE ${title} LIMIT 4;`);
 

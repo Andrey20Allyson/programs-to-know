@@ -15,6 +15,15 @@ html{
     font-family: FiraCode;
 }
 
+.header-link {
+    font-size: calc(14px + .2vw);
+    color: #9d47ff;
+}
+
+.header-navigation {
+    text-align: left;
+}
+
 body{
     margin: 0px;
 

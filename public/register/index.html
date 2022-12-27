@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Registrar</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="./register.style.css">
 </head>
 <body>
     <header>
         <h1>Registre uma nova tecnologia</h1>
+        <nav class="header-navigation">
+            <a class="header-link" href="..">Home</a>
+        </nav>
     </header>
     <div class="input-div">
         <p>Título</p>
@@ -30,6 +33,9 @@
         </select>
         <br>
         <input type="button" id="register-button" value="Registrar" class="register-btn">
+    </div>
+    <div class="botton-div">
+        <p id="result"></p>
     </div>
     <script type="module" src="../dist/register.js"></script>
 </body>

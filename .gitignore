@@ -1,2 +1,5 @@
 node_modules
 dist
+*firebase-adminsdk*
+public/index.*
+!public/index.html

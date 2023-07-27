@@ -3,25 +3,35 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "build:all": "tsc -p server && tsc -p client",
-    "build:server": "tsc -p server",
-    "build:client": "tsc -p client",
-    "start": "node dist/server/index.js",
-    "dev": "ts-node-dev server/index.ts --transpile-only"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.1",
+    "firebase-admin": "^11.10.1",
+    "lodash": "^4.17.21",
     "mysql": "^2.18.1",
-    "typescript": "^4.9.3"
+    "serialize-javascript": "^6.0.1",
+    "typescript": "^4.9.3",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
+    "@types/lodash": "^4.14.196",
     "@types/mysql": "^2.15.21",
+    "@types/react": "^18.2.17",
+    "@types/react-dom": "^18.2.7",
+    "@types/serialize-javascript": "^5.0.2",
+    "esbuild": "^0.18.17",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.10.1",
+    "react-loading-skeleton": "^3.3.1",
+    "react-router-dom": "^6.14.2",
+    "styled-components": "^6.0.5",
     "ts-node": "^10.9.1",
-    "ts-node-dev": "^2.0.0"
+    "ts-node-dev": "^2.0.0",
+    "tsx": "^3.12.7"
   }
 }

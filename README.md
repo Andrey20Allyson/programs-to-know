@@ -33,7 +33,7 @@ Prograns To Know é um web-serviço que apresenta uma gama de tecnologias para s
 
 ## Construido com
 
-Aqui está os Frameworks, Linguagens e APIs utilizadas para execução desse projeto.
+Aqui estão os Frameworks, Linguagens e APIs utilizadas para execução desse projeto.
 
 ### Front-End
 

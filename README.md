@@ -5,6 +5,10 @@
 
 [![NPM](https://img.shields.io/badge/license-MIT-green)](https://github.com/Andrey20Allyson/programs-to-know/blob/master/LICENSE)
 
+<div align='center'>
+    <image src='./imgs/print.png'>
+</div>
+
 ## Sobre o Projeto
 
 Prograns To Know é um web-serviço que apresenta uma gama de tecnologias para se conhecer quando está se iniciando na programação.
@@ -33,7 +37,10 @@ Aqui está os Frameworks, Linguagens e APIs utilizadas para execução desse pro
 
 ### Front-End
 
-- JavaScript
+- Typescript
+- React
+- Zod
+- Styled Components
 - HTML
 - CSS
 
@@ -41,6 +48,9 @@ Aqui está os Frameworks, Linguagens e APIs utilizadas para execução desse pro
 
 - NodeJS
 - Express
+- Firebase Admin
+- Zod
+
 
 ## Criando um servidor local
 
@@ -68,16 +78,23 @@ Entre no diretório recem criado
 cd programs-to-know
 ```
 
-Instalar as dependencias descritas no `package.json`
+Insira a service account do firebase no diretório `./keys`, o nome do arquivo deve ser `firebase-service-account.json`
+
+Instale as dependencias
 
 ```sh
 npm install
 ```
 
-Por fim, execute o arquivo `index.js` com o NodeJS
+Realize o processo de `build` tanto do Servidor quanto do Client
 
 ```sh
-node index.js
+npm run build
+```
+
+Por fim, inicialize a aplicação
+```sh
+npm start
 ```
 
 ## Progresso

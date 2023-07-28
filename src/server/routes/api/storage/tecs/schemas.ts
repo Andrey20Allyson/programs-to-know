@@ -34,8 +34,25 @@ export const postTecResponseBody = createAPIResponseBodySchema(
   zod.string(),
 );
 
+export const putTecResponseBody = createAPIResponseBodySchema(
+  zod.object({
+    id: zod.string(),
+  }),
+  zod.string(),
+);
+
+export const deleteTecResponseBody = createAPIResponseBodySchema(
+  zod.object({
+    deleted: zod.boolean(),
+  }),
+  zod.string(),
+);
+
 export type TecDTO = zod.infer<typeof tecDTOSchema>;
-export type TecDatabasePostDTO = zod.infer<typeof tecDatabasePostDTOSchema>;
 export type TecDatabaseDTO = zod.infer<typeof tecDatabaseDTOSchema>;
+export type TecDatabasePostDTO = zod.infer<typeof tecDatabasePostDTOSchema>;
+
 export type GetTecResponseBody = zod.infer<typeof getTecResponseBody>;
 export type PostTecResponseBody = zod.infer<typeof postTecResponseBody>;
+export type PutTecResponseBody = zod.infer<typeof putTecResponseBody>;
+export type DeleteTecResponseBody = zod.infer<typeof deleteTecResponseBody>;

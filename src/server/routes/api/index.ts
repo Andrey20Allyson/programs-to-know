@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { StorageRoute } from "./storage/tecs";
+import { StorageRoute } from "./storage";
 
 export function createAPI() {
     const router = Router();
@@ -7,9 +7,7 @@ export function createAPI() {
     router.use(express.urlencoded({ extended: false }));
     router.use(express.json());
 
-    const storageRouter = StorageRoute();
-
-    router.use('/storage', storageRouter);
+    router.use('/storage', StorageRoute());
 
     return router;
 }

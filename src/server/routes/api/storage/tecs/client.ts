@@ -1,4 +1,4 @@
-import { TecDatabasePostDTO, getTecResponseBody, postTecResponseBody } from "./schemas";
+import { TecDTO, TecDatabasePostDTO, deleteTecResponseBody, getTecResponseBody, postTecResponseBody, putTecResponseBody } from "./schemas";
 
 export class TecStorageConsumer {
   readonly path = '/api/storage/tecs';
@@ -23,5 +23,29 @@ export class TecStorageConsumer {
     const data = await resp.json();
 
     return postTecResponseBody.parse(data);
+  }
+
+  async update(tec: TecDTO) {
+    const resp = await fetch(`${this.path}`, {
+      method: 'PUT',
+      body: JSON.stringify(tec),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await resp.json();
+
+    return putTecResponseBody.parse(data);
+  }
+
+  async delete(id: string) {
+    const resp = await fetch(`${this.path}?id=${id}`, {
+      method: 'DELETE',
+    });
+  
+    const data = await resp.json();
+
+    return deleteTecResponseBody.parse(data);
   }
 }

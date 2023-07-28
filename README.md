@@ -33,7 +33,7 @@ Prograns To Know é um web-serviço que apresenta uma gama de tecnologias para s
 
 ## Construido com
 
-Aqui está os Frameworks, Linguagens e APIs utilizadas para execução desse projeto.
+Aqui está os Frameworks, Linguagens e APIs utilizadas para construção e execução desse projeto.
 
 ### Front-End
 
@@ -51,6 +51,12 @@ Aqui está os Frameworks, Linguagens e APIs utilizadas para execução desse pro
 - Firebase Admin
 - Zod
 
+### Desenvolvimento
+
+- Typescript
+- TSX
+- Esbuild
+- TS Node Dev
 
 ## Criando um servidor local
 
@@ -104,7 +110,7 @@ npm start
 - [x] Requisitar dados do Servidor
 - [x] Um site estilizado
 - [x] Interface de cadastro de dados
-- [ ] Animações
+- [x] Animações
 - [ ] Pop-ups descritivos
 - [ ] Ordenação dinâmica
 ### Back-End

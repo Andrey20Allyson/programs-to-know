@@ -1,32 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styled, { css } from 'styled-components';
-import type { TecDTO } from "../../../server/routes/api/storage/tecs";
+import type { TecDTO } from "../../../server/routes/api/storage/tecs/schemas";
 import { AiOutlineSearch } from 'react-icons/ai';
 import Skeleton from 'react-loading-skeleton';
 import lodash from 'lodash'
 import { Link } from 'react-router-dom';
 import { TecCard } from "../../components/TecCard";
+import { TecStorageConsumer } from "../../../server/routes/api/storage/tecs/client";
 
 function sleep(ms: number) {
   return new Promise(res => setInterval(res, ms));
-}
-
-async function fakeAPI(): Promise<TecDTO[]> {
-  await sleep(100);
-
-  const resp: TecDTO[] = Array.from(lodash.range(0, 20), _ => {
-    return {
-      id: lodash.uniqueId('tec-'),
-      architecture: '64',
-      dependences: [],
-      downloadUrl: 'https://nodejs.org/en',
-      title: 'NodeJS',
-      imageUrl: './imgs/nodejs.jpeg',
-      description: 'Ambiente de execução javascript Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque ab optio minus asperiores, harum at ipsum aliquam odio, dignissimos facere eaque? Voluptatem assumenda ipsum id blanditiis debitis nihil ut nostrum.'
-    };
-  });
-
-  return resp;
 }
 
 type ResponseState<T, E = unknown> = {
@@ -39,45 +22,61 @@ type ResponseState<T, E = unknown> = {
   data: T;
 }
 
+export const tecStorageAPI = new TecStorageConsumer();
+
 function useTecs() {
   const [response, setResponse] = useState<ResponseState<TecDTO[]>>({ status: 'loading' });
   const [searchString, setSearchString] = useState('');
+  const [changed, setChanged] = useState(true);
 
   useEffect(() => {
-    async function requestTecs() {
-      try {
-        const resp = await fakeAPI();
+    search();
+  }, []);
 
-        setResponse({ status: 'success', data: resp });
-      } catch (e) {
-        setResponse({ status: 'error', error: e });
-      }
+  async function search() {
+    if (!changed) return;
+
+    setChanged(false);
+    setResponse({ status: 'loading' });
+
+    try {
+      const resp = await tecStorageAPI.query(searchString);
+
+      if (!resp.ok) return setResponse({ status: 'error', error: resp.error });
+
+      setResponse({ status: 'success', data: resp.data });
+    } catch (e) {
+      setResponse({ status: 'error', error: e });
     }
-
-    if (response.status !== 'loading') setResponse({ status: 'loading' });
-
-    requestTecs();
-  }, [searchString]);
-
-  async function search(title: string) {
-    setSearchString(title);
   }
 
-  return { response, search, searchString }
+  function changeSearch(title: string) {
+    if (title !== searchString) {
+      setSearchString(title);
+      setChanged(true);
+    }
+  }
+
+  return { response, search, searchString, changeSearch }
 }
 
 export interface HomeProps { }
 
 export default function Home(props: HomeProps) {
-  const [searchString, setSearchString] = useState('');
-  const { response, search } = useTecs();
+  const { response, search, changeSearch } = useTecs();
 
   function handleSearchChange(ev: React.ChangeEvent<HTMLInputElement>) {
-    setSearchString(ev.currentTarget.value);
+    changeSearch(ev.currentTarget.value);
   }
 
   function handleSearch() {
-    search(searchString)
+    search();
+  }
+
+  function handleKeyDown(ev: React.KeyboardEvent<HTMLInputElement>) {
+    if (ev.key === 'Enter') {
+      search();
+    }
   }
 
   const tecElements = response.status === 'error' ? <p>{JSON.stringify(response.error)}</p> : response.status === 'success'
@@ -90,8 +89,8 @@ export default function Home(props: HomeProps) {
         <section className='search-container'>
           <label>Buscar tecnologia</label>
           <span className='search-bar'>
-            <input type="text" placeholder="buscar" onChange={handleSearchChange} onBlur={handleSearch} />
-            <AiOutlineSearch />
+            <input type="text" placeholder="buscar" onKeyDown={handleKeyDown} onChange={handleSearchChange} onBlur={handleSearch} />
+            <AiOutlineSearch onClick={handleSearch} />
           </span>
         </section>
         <nav>

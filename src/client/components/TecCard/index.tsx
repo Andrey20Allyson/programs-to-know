@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
-import type { TecDTO } from "../../../server/routes/api/storage/tecs";
+import type { TecDTO } from "../../../server/routes/api/storage/tecs/schemas";
 import { AiOutlineDownload } from 'react-icons/ai';
 
 export interface TecCardProps {
@@ -63,7 +63,10 @@ export const StyledTecCard = styled.span`
   }
 
   &>img {
-    height: 100%;
+    height: 5rem;
+    width: 5rem;
+    background-size: cover;
+    object-fit: contain;
     background-color: #fff;
     border-top-left-radius: inherit;
     border-bottom-left-radius: inherit;
@@ -78,10 +81,17 @@ export const StyledTecCard = styled.span`
     &>.title-box {
       display: flex;
       flex-direction: column;
+      align-items: center;
+      width: 6rem;
       gap: 1rem;
 
       &>h2 {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: center;
+        overflow: hidden;
         font-size: 1rem;
+        width: 5.5rem;
         margin: 0;
       }
 

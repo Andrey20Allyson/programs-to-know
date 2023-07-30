@@ -26,7 +26,7 @@ export class TecStorageConsumer {
   }
 
   async update(tec: TecDTO) {
-    const resp = await fetch(`${this.path}`, {
+    const resp = await fetch(this.path, {
       method: 'PUT',
       body: JSON.stringify(tec),
       headers: {

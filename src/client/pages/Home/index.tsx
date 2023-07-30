@@ -7,6 +7,7 @@ import lodash from 'lodash'
 import { Link } from 'react-router-dom';
 import { TecCard } from "../../components/TecCard";
 import { TecStorageConsumer } from "../../../server/routes/api/storage/tecs/client";
+import { TecViewModal } from "../../components/TecViewModal";
 
 function sleep(ms: number) {
   return new Promise(res => setInterval(res, ms));
@@ -104,6 +105,7 @@ export default function Home(props: HomeProps) {
           </section>
         </section>
       </section>
+      <TecViewModal/>
     </StyledHome>
   );
 }

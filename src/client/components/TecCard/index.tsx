@@ -2,12 +2,14 @@ import React from "react";
 import { styled } from "styled-components";
 import type { TecDTO } from "../../../server/routes/api/storage/tecs/schemas";
 import { AiOutlineDownload } from 'react-icons/ai';
+import { useTecViewModal } from "../TecViewModal";
 
 export interface TecCardProps {
   tec: TecDTO;
 }
 
 export function TecCard(props: TecCardProps) {
+  const { tec } = props;
   const {
     architecture,
     dependences,
@@ -16,10 +18,16 @@ export function TecCard(props: TecCardProps) {
     imageUrl,
     title,
     id,
-  } = props.tec;
+  } = tec;
+  
+  const modal = useTecViewModal();
+  
+  function handleOpenModal() {
+    modal.open({ tec })
+  }
 
   return (
-    <StyledTecCard>
+    <StyledTecCard onClick={handleOpenModal}>
       <img src={imageUrl} alt="" />
       <div className='body'>
         <span className='title-box'>

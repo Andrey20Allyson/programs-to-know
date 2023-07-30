@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev:bundle": "tsx scripts/bundle.dev.ts",
-    "dev:server": "tsx --watch src/server",
+    "dev:server": "ts-node-dev src/server",
     "start": "node dist",
     "build": "tsc -p src/server && tsx scripts/bundle.prod.ts"
   },
